@@ -64,8 +64,10 @@ class PluginAamarpay extends GatewayPlugin
             $bar = "";
         }
         $baseURL = CE_Lib::getSoftwareURL() . $bar;
-        // $CallbackURL = $baseURL . "plugins/gateways/aamarPay/callback.php";
-
+        
+        $CallbackURL = $baseURL . "plugins/gateways/aamarpay/callback.php";
+// var_dump($CallbackURL);
+//         die();https://portal.cornq.com/plugins/gateways/aamarpay/callback.php
         $currency = $params['userCurrency'];
 
         $TestMode = $params['plugin_aamarpay_Test Mode'];
@@ -81,7 +83,7 @@ class PluginAamarpay extends GatewayPlugin
             $payment_url = $live_url;
         }
 
-        $CallbackURL = "https://manage.networxhost.com/plugins/gateways/aamarpay/callback.php";
+        // $CallbackURL = "https://manage.networxhost.com/plugins/gateways/aamarpay/callback.php";
         $cancel_url=$params["invoiceviewURLCancel"];
         
         // var_dump($invoiceId);
@@ -105,6 +107,7 @@ class PluginAamarpay extends GatewayPlugin
             "cus_postcode" => $postcode,
             "cus_country" => $country,
             "cus_phone" => $phone,
+            "opt_a" => $amount,
             "type" => "json"
         ];
        
