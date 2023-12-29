@@ -16,8 +16,8 @@ class PluginAamarpayCallback extends PluginCallback
             $TestMode = trim($cPlugin->GetPluginVariable("plugin_aamarpay_Test Mode"));
             $store_id = trim($cPlugin->GetPluginVariable("plugin_aamarpay_Store Id"));
             $store_passwd = trim($cPlugin->GetPluginVariable("plugin_aamarpay_Signature Key"));
-        // var_dump($store_passwd);
-        // die();
+            // var_dump($store_passwd);
+            // die();
             if ($TestMode == 1) {
                 $check_url = "https://sandbox.aamarpay.com";
             } else {
@@ -46,9 +46,10 @@ class PluginAamarpayCallback extends PluginCallback
     
             $status_code = $data["status_code"];
             $pay_status = $data["pay_status"];
-            $price = $data["amount"]." ".$data["currency"];
-            $amount=$data["amount"];
-            // var_dump($pay_status);
+            $price = $data["amount"];
+            $amount=$data["opt_a"];
+            $aamarpayTransectionId = $data["pg_txnid"];
+            // var_dump($aamarpayTransectionId);
             // die();
             $cPlugin = new Plugin($request_id, 'aamarpay', $this->user);
             $cPlugin->setAmount($amount);
@@ -59,8 +60,9 @@ class PluginAamarpayCallback extends PluginCallback
             if ($pay_status === "Successful") {
 
                 if ($cPlugin->IsUnpaid() == 1) {
-                    $transaction = " aamarpay payment of $price Successful (Order ID: " . $request_id . ")";
-                    $cPlugin->PaymentAccepted($amount, $transaction);
+                    $transaction = " aamarpay payment of $price  BDT Successful (Order ID: " . $request_id . ")";
+                    $cPlugin->setTransactionID($aamarpayTransectionId);
+                    $cPlugin->PaymentAccepted($amount, $transaction,$request_id,false);
                     $returnURL = CE_Lib::getSoftwareURL() . "/index.php?fuse=billing&paid=1&controller=invoice&view=invoice&id=" . $request_id;
                     header("Location: " . $returnURL);
                     exit;
@@ -69,7 +71,7 @@ class PluginAamarpayCallback extends PluginCallback
                     return;
                 }
             } else {
-                $transaction = " aamarpay payment of $price Failed (Order ID: " . $request_id . ")";
+                $transaction = " aamarpay payment of $price BDT Failed (Order ID: " . $request_id . ")";
                 $cPlugin->PaymentRejected($transaction);
                 $returnURL = CE_Lib::getSoftwareURL() ."/index.php?fuse=billing&controller=invoice&view=invoice&id=".$request_id;
                 header("Location: " . $returnURL);
